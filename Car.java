@@ -1,9 +1,8 @@
-import java.util.*;
 import java.util.concurrent.*;
 
 public class Car implements Runnable {
-    
-    private Monitor carMon; 
+
+    private Monitor carMon;
     private int id;
 
     public Car(int id, Monitor mon) {
@@ -12,30 +11,22 @@ public class Car implements Runnable {
     }
 
     public void run() {
-        try {
-            while(true) {
+        while (true) {
 
-                // All Passenger Enters
-                carMon.carLoad(id);
+            // All Passenger Enters
+            carMon.carLoad(id);
 
-                try { 
-                    // Car is running
-                    int randTime = ThreadLocalRandom.current().nextInt(0, 1000);
-                    Thread.sleep(randTime);
-                } catch(InterruptedException e) {
-                    e.printStackTrace(System.out);
-                }
-
-                // All Passengers Leaves
-                carMon.carUnload(id);
+            try {
+                // Car is running
+                int randTime = ThreadLocalRandom.current().nextInt(0, 1000);
+                Thread.sleep(randTime);
+            } catch (InterruptedException e) {
+                e.printStackTrace(System.out);
             }
-        } catch(InterruptedException e) {
-            e.printStackTrace(System.out);
+
+            // All Passengers Leaves
+            carMon.carUnload(id);
         }
     }
-
-
-
-
 
 }
