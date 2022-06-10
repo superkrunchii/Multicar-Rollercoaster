@@ -73,7 +73,7 @@ public class Monitor {
                 }
             }
         }
-        System.out.println("Passenger " + (i + 1) + " gets in car at timestampe: " + System.currentTimeMillis());
+        System.out.println("Passenger " + (i + 1) + " gets in car at timestamp: " + System.currentTimeMillis());
         synchronized (notifyCar) {
             notifyCar.notify();
         }

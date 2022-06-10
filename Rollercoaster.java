@@ -1,6 +1,6 @@
 public class Rollercoaster {
-    public static int PASSENGER_NUM = 8;// Number of people totally
-    public static int CAR_NUM = 2; // Number of passenger cars
+    public static int PASSENGER_NUM = 20;// Number of people totally
+    public static int CAR_NUM = 5; // Number of passenger cars
     public static int SEAT_AVAIL = 4; // Number of passengers a car holds
 
     public static void main(String[] args) {
@@ -19,6 +19,7 @@ public class Rollercoaster {
         }
         for (int i = 0; i < CAR_NUM; i++) {
             theCar = new Car(i, rcMon);
+            System.out.println("i = "+i);   //<===
             t2[i] = new Thread(theCar);
         }
 
@@ -26,6 +27,7 @@ public class Rollercoaster {
             t1[i].start();
         }
         for (int i = 0; i < CAR_NUM; i++) {
+            System.out.println("started car i = "+i);   //<===
             t2[i].start();
         }
 

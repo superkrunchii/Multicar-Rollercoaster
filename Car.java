@@ -12,7 +12,7 @@ public class Car implements Runnable {
 
     public void run() {
         while (true) {
-
+            System.out.println("started car" + this.id); //<==
             // All Passenger Enters
             carMon.carLoad(id);
 
