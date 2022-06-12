@@ -4,12 +4,11 @@ public class Monitor {
     private Object notifyPassenger = new Object();
     private Object notifyCar = new Object();
 
-    private int i, line_length; // Number of passengers waiting to board the car.
+    private int count, line_length;
     private int seats_available = 0;
     boolean coaster_loading_passengers = false;
     boolean passengers_riding = true;
 
-    // Loading of Car
     public void boardCar(int id) {
         synchronized (notifyCar) {
             while (!isCarRunning()) {
@@ -29,21 +28,18 @@ public class Monitor {
         }
     }
 
-    // Check if the Car is Running
     public synchronized boolean isCarRunning() {
         if (seats_available == 0) {
-            // if there is no seat, car starts to run and reset parameters.
             seats_available = Rollercoaster.SEAT_AVAIL;
-            // reset seat available num for the next ride
-            coaster_loading_passengers = true; // Indicating car is running.
-            passengers_riding = true; // passengers are riding in the car.
+            coaster_loading_passengers = true; 
+            passengers_riding = true; 
             return true;
         } else
             return false;
     }
 
     private synchronized boolean seatAvailable() {
-        // Check if seat is still available for passenger who tries to get on.
+        
         if ((seats_available > 0)
                 && (seats_available <= Rollercoaster.SEAT_AVAIL)
                 && (!passengers_riding)) {
@@ -53,9 +49,9 @@ public class Monitor {
             return false;
     }
 
-    public void unboardCar(int i) {
+    public void unboardCar(int count) {
         synchronized (this) {
-            // reset parameters
+            
             passengers_riding = false;
             coaster_loading_passengers = false;
         }
@@ -64,16 +60,16 @@ public class Monitor {
         }
     }
 
-    public void tryToGetOnCar(int i) {
+    public void tryToGetOnCar(int count) {
         synchronized (notifyPassenger) {
             while (!seatAvailable()) {
                 try {
-                    notifyPassenger.wait(); // Notify the passenger to wait
+                    notifyPassenger.wait();
                 } catch (InterruptedException e) {
                 }
             }
         }
-        System.out.println("Passenger " + (i + 1) + " gets in car at timestamp: " + System.currentTimeMillis());
+        System.out.println("Passenger " + (count + 1) + " gets in car");
         synchronized (notifyCar) {
             notifyCar.notify();
         }
