@@ -10,7 +10,7 @@ public class Monitor {
     boolean passengers_riding = true;
 
     // Loading of Car
-    public void carLoad(int id) {
+    public void boardCar(int id) {
         synchronized (notifyCar) {
             while (!isCarRunning()) {
                 try {
@@ -53,7 +53,7 @@ public class Monitor {
             return false;
     }
 
-    public void carUnload(int i) {
+    public void unboardCar(int i) {
         synchronized (this) {
             // reset parameters
             passengers_riding = false;
