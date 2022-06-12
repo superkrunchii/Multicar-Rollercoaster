@@ -54,11 +54,11 @@ class RollerCoaster {
 
 class Passenger implements Runnable {
     private int id;
-    private Monitor passengerMon;
+    private Monitor mtrPSNGR;
 
-    public Passenger(int i, Monitor monitorIn) {
-        id = i;
-        this.passengerMon = monitorIn;
+    public Passenger(int num, Monitor mtr) {
+        id = num;
+        this.mtrPSNGR = mtr;
     }
 
     public void run() {
@@ -68,7 +68,7 @@ class Passenger implements Runnable {
                 Thread.sleep((int) (Math.random() * 4000));
             } catch (InterruptedException e) {
             }
-            passengerMon.tryToGetOnCar(id);
+            mtrPSNGR.tryToGetOnCar(id);
         }
     }
 } // end of Passenger class
