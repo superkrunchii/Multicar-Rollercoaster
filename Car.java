@@ -5,25 +5,20 @@ public class Car implements Runnable {
     private Monitor mon;
     private int id;
 
-    public Car(int id, Monitor mon) {
+    public Car(int id, Monitor m) {
         this.id = id;
-        this.mon = mon;
+        mon = m;
     }
 
     public void run() {
         while (true) {
-            System.out.println("Car " + this.id + " is ready to be boarded"); 
-            mon.boardCar(id);  
-            System.out.println("All aboard Car " + this.id);
             try {
-                System.out.println("Car" + this.id + " is running");
-                int rand = ThreadLocalRandom.current().nextInt(0, 1000);    
-                Thread.sleep(rand);
+                mon.boardCar(id);
+                Thread.sleep(ThreadLocalRandom.current().nextInt(0, 1000));
+                mon.unboardCar(id);
             } catch (InterruptedException e) {
-                e.printStackTrace(System.out);
+                e.printStackTrace();
             }
-            mon.unboardCar(id);    
-            System.out.println("All ashore from Car " + this.id);
         }
     }
 

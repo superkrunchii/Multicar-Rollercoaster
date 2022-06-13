@@ -1,77 +1,93 @@
-public class Monitor {
-    private int carId, passengerCapacity, seatsAvailable;
+import java.util.*;
 
-    private Object notifyPassenger = new Object();
-    private Object notifyCar = new Object();
+class Monitor {
+    Rollercoaster rc = new Rollercoaster();
+    private int seats_available;
+    boolean carBool = false;
 
-    private int count, line_length;
-    private int seats_available = 0;
-    boolean coaster_loading_passengers = false;
-    boolean passengers_riding = true;
+    private Object pNotif = new Object(), cNotif = new Object();
+    private int temp = 0;
+    public static ArrayList<Integer> carQueue = new ArrayList<Integer>();
 
-    public void boardCar(int id) {
-        synchronized (notifyCar) {
-            while (!isCarRunning()) {
+    public void setSeats(int seats) {
+        seats_available = seats;
+    }
+
+    public void setRC(Rollercoaster rc) {
+        this.rc = rc;
+    }
+
+    public void getInCar(int i) {
+        synchronized (pNotif) {
+            while (!hasVacantSeat()) {
                 try {
-                    notifyCar.wait();
+                    pNotif.wait();
                 } catch (InterruptedException e) {
-                    e.printStackTrace(System.out);
+                    e.printStackTrace();
                 }
             }
-
-            System.out.println("Car " + id + " is full and loaded boom");
-
-            synchronized (notifyCar) {
-                notifyCar.notifyAll();
-            }
-
+        }
+        System.out.println("Passenger " + (i + 1) + " gets in car");
+        synchronized (cNotif) {
+            cNotif.notify();
         }
     }
 
-    public synchronized boolean isCarRunning() {
-        if (seats_available == 0) {
-            seats_available = Rollercoaster.SEAT_AVAIL;
-            coaster_loading_passengers = true; 
-            passengers_riding = true; 
-            return true;
-        } else
-            return false;
-    }
-
-    private synchronized boolean seatAvailable() {
-        
+    private synchronized boolean hasVacantSeat() {
         if ((seats_available > 0)
-                && (seats_available <= Rollercoaster.SEAT_AVAIL)
-                && (!passengers_riding)) {
+                && (seats_available <= rc.carCap)
+                && (!carBool)) {
             seats_available--;
             return true;
         } else
             return false;
     }
 
-    public void unboardCar(int count) {
-        synchronized (this) {
-            
-            passengers_riding = false;
-            coaster_loading_passengers = false;
+    public void boardCar(int i) {
+        if (temp == 0) {
+            System.out.println("Car " + (i + 1) + " is ready to be loaded");
+            temp++;
+            carQueue.add(i);
         }
-        synchronized (notifyPassenger) {
-            notifyPassenger.notifyAll();
-        }
-    }
 
-    public void tryToGetOnCar(int count) {
-        synchronized (notifyPassenger) {
-            while (!seatAvailable()) {
+        synchronized (cNotif) {
+            while (!isCarRunning()) {
                 try {
-                    notifyPassenger.wait();
+                    cNotif.wait();
                 } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
             }
         }
-        System.out.println("Passenger " + (count + 1) + " gets in car");
-        synchronized (notifyCar) {
-            notifyCar.notify();
+
+        System.out.println("All aboard car " + (carQueue.get(0) + 1));
+        synchronized (pNotif) {
+            pNotif.notifyAll();
+        }
+    }
+
+    private synchronized boolean isCarRunning() {
+        if (seats_available == 0) {
+            // Reset
+            seats_available = rc.carCap;
+            carBool = true;
+            return true;
+        } else
+            return false;
+    }
+
+    public void unboardCar(int i) {
+        int carId = carQueue.get(0);
+        System.out.println("All ashore car " + (carQueue.get(0) + 1));
+        System.out.println("Car " + (carQueue.get(0) + 1) + " is ready to be loaded");
+        carQueue.remove(0);
+        carQueue.add(carId);
+
+        synchronized (this) {
+            carBool = false;
+        }
+        synchronized (pNotif) {
+            pNotif.notifyAll();
         }
     }
 }
