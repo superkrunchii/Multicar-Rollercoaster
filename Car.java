@@ -2,30 +2,28 @@ import java.util.concurrent.*;
 
 public class Car implements Runnable {
 
-    private Monitor carMon;
+    private Monitor mon;
     private int id;
 
     public Car(int id, Monitor mon) {
         this.id = id;
-        this.carMon = mon;
+        this.mon = mon;
     }
 
     public void run() {
         while (true) {
-            System.out.println("started car" + this.id); //<==
-            // All Passenger Enters
-            carMon.carLoad(id);
-
+            System.out.println("Car " + this.id + " is ready to be boarded"); 
+            mon.boardCar(id);  
+            System.out.println("All aboard Car " + this.id);
             try {
-                // Car is running
-                int randTime = ThreadLocalRandom.current().nextInt(0, 1000);
-                Thread.sleep(randTime);
+                System.out.println("Car" + this.id + " is running");
+                int rand = ThreadLocalRandom.current().nextInt(0, 1000);    
+                Thread.sleep(rand);
             } catch (InterruptedException e) {
                 e.printStackTrace(System.out);
             }
-
-            // All Passengers Leaves
-            carMon.carUnload(id);
+            mon.unboardCar(id);    
+            System.out.println("All ashore from Car " + this.id);
         }
     }
 
